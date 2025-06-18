@@ -18,11 +18,18 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-
+  host: 127.0.0.1
+  username: postgres
+  password: postgres
 
 development:
-  <<: *default
-  database: redlead_development
+  primary:
+    <<: *default
+    database: redlead_development
+
+  queue:
+    <<: *default
+    migrations_paths: db/queue_schema
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.

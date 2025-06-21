@@ -5,10 +5,12 @@ gem "rails", "~> 8.0.2"
 gem "bcrypt", "~> 3.1.7"
 gem "bigdecimal"
 gem "bootsnap", require: false
+gem "dotenv-rails"
 gem "faraday"
 gem "fiddle"
 gem "image_processing", "~> 1.2"
 gem "importmap-rails"
+gem "informers"
 gem "jbuilder"
 gem "kamal", require: false
 gem "langchainrb"
@@ -26,6 +28,7 @@ gem "solid_queue"
 gem "stimulus-rails"
 gem "tailwindcss-rails"
 gem "thruster", require: false
+gem "transformers-rb"
 gem "turbo-rails"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 

@@ -1,0 +1,30 @@
+class SubredditPost < ApplicationRecord
+  include Embeddable
+
+  set_embeddable :prompt
+  set_embedding_models :informer_gte, :informer_nomic
+
+  belongs_to :subreddit
+
+  validates_presence_of :num_comments, :score, :ups, :upvote_ratio, :author, :author_fullname, :display_id, :domain, :name,
+    :permalink, :url, :subreddit_name, :subreddit_name_prefixed, :subreddit_str_id, :title
+
+  validates :num_comments, :score, :ups, comparison: { greater_than_or_equal_to: 0 }
+  validates :name, uniqueness: true
+
+  def prompt
+    return @prompt if @prompt
+
+    if title? && selftext?
+      @prompt = <<~XML
+        <title>#{title}</title>
+        <description>#{selftext}</description>
+      XML
+      @prompt = @prompt.squish
+    elsif title?
+      @prompt = title
+    elsif
+      @prompt = selftext
+    end
+  end
+end

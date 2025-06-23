@@ -39,6 +39,10 @@ class BusinessesController < ApplicationController
     redirect_to businesses_path, status: :see_other, notice: "Business was successfully destroyed."
   end
 
+  def scrape_posts
+    CallServiceJob.perform_later(TemporaryService)
+  end
+
   private
     def set_business
       @business = Business.find(params.expect(:id))

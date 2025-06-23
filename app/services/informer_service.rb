@@ -1,19 +1,24 @@
 class InformerService < ApplicationService
+  BATCH_SIZE = 256
+
   required_params :record
 
   def call
     @client = InformerClient.new
 
+    @embedding_models ||= (@record.is_a?(Array) ? @record.first : @record).embedding_models
+    @embedding_models = Array(@embedding_models).uniq
+
     if single_record?
       process_single_record
     else
-      process_multiple_record
+      process_multiple_records
     end
   end
 
   private
     def process_single_record
-      embedding_data = Parallel.map(embedding_models, in_threads: embedding_models.length) do |embedding_model|
+      embedding_data = Parallel.map(@embedding_models, in_threads: @embedding_models.length) do |embedding_model|
         embedding = @client.embed(embedding_model, @record.public_send(embeddable)).first
 
         { embeddable: @record, embedding:, embedding_model: }
@@ -24,8 +29,8 @@ class InformerService < ApplicationService
 
     def process_multiple_records
       embedding_data = enumerator.map do |records|
-        Parallel.map(embedding_models, in_threads: embedding_models.length) do |embedding_model|
-          embeddings = @client.embed(model: OllamaClient.models[embedding_model], text: records.map(&:"#{embeddable}"))
+        Parallel.map(@embedding_models, in_threads: @embedding_models.length) do |embedding_model|
+          embeddings = @client.embed(embedding_model, records.map(&:"#{embeddable}"))
 
           records.zip(embeddings).map { |record, embedding| { embeddable: record, embedding:, embedding_model: } }
         end
@@ -48,13 +53,5 @@ class InformerService < ApplicationService
       else
         @record.find_in_batches(batch_size: BATCH_SIZE)
       end
-    end
-
-    def embedding_models
-      return @embedding_models if @have_set_embedding_models
-
-      @embedding_models ||= (@record.is_a?(Array) ? @record.first : @record).embedding_models
-      @embedding_models = Array(@embedding_models).uniq
-      @have_set_embedding_models = true
     end
 end

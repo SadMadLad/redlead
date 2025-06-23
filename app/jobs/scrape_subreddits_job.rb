@@ -1,15 +1,15 @@
 class ScrapeSubredditsJob < ApplicationJob
-  def perform(continue_upto: 30, embed: false)
+  def perform(continue_upto: 30, embed: false, async: false)
     after = nil
     reddit_client = RedditClient.new
 
     0.upto(continue_upto) do
-      subreddits, after = reddit_client.subreddits(after:)
+      subreddits, after = RedditClient[:subreddits, after:] reddit_client.subreddits(after:)
 
       subreddits = Subreddit.create subreddits
       subreddits = subreddits.filter(&:valid?)
 
-      Subreddit.embed(subreddits) if embed
+      Subreddit.embed(subreddits, async:) if embed
 
       break if after.blank?
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_19_195017) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_21_205800) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -44,6 +44,31 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_19_195017) do
     t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
   end
 
+  create_table "subreddit_posts", force: :cascade do |t|
+    t.bigint "subreddit_id"
+    t.integer "num_comments"
+    t.integer "score"
+    t.integer "ups"
+    t.float "upvote_ratio"
+    t.string "author"
+    t.string "author_fullname"
+    t.string "display_id"
+    t.string "domain"
+    t.string "name"
+    t.string "permalink"
+    t.string "url"
+    t.string "subreddit_name"
+    t.string "subreddit_name_prefixed"
+    t.string "subreddit_str_id"
+    t.text "selftext"
+    t.text "selftext_html"
+    t.text "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_subreddit_posts_on_name", unique: true
+    t.index ["subreddit_id"], name: "index_subreddit_posts_on_subreddit_id"
+  end
+
   create_table "subreddits", force: :cascade do |t|
     t.integer "subscribers"
     t.string "display_name"
@@ -57,4 +82,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_19_195017) do
     t.datetime "updated_at", null: false
     t.index ["url"], name: "index_subreddits_on_url", unique: true
   end
+
+  add_foreign_key "subreddit_posts", "subreddits"
 end

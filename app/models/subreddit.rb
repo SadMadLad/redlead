@@ -2,7 +2,9 @@ class Subreddit < ApplicationRecord
   include Embeddable
 
   set_embeddable :embeddable_data
-  set_embedding_models :informer_gte
+  set_embedding_models :informer_gte, :informer_nomic
+
+  has_many :subreddit_posts, dependent: :nullify
 
   validates_presence_of *%i[subscribers display_name display_id title url description description_html name]
 
@@ -18,5 +20,13 @@ class Subreddit < ApplicationRecord
     XML
 
     @prompt = @prompt.squish
+  end
+
+  def refresh(async: false)
+    if async
+      RefreshSubredditJob.perform_later(id)
+    else
+      RefreshSubredditJob.new.perform(id)
+    end
   end
 end

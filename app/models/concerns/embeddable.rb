@@ -17,18 +17,12 @@ module Embeddable
       embedding_models = Array(embedding_models)
       use_informer = embedding_models.all? { |embedding_model| embedding_model.start_with?("informer") }
 
-      if use_informer
-        if async
-          CallServiceJob.perform_later(InformerService, record: records, embedding_models:)
-        else
-          InformerService.call(record: records, embedding_models:)
-        end
+      service = use_informer ? InformerService : EmbeddingService
+
+      if async
+        CallServiceJob.perform_later(service, record: records.to_a, embedding_models:)
       else
-        if async
-          CallServiceJob.perform_later(EmbeddingService, record: records, embedding_models:)
-        else
-          EmbeddingService.call(record: records, embedding_models:)
-        end
+        service.call(record: records, embedding_models:)
       end
     end
 

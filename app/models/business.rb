@@ -2,7 +2,7 @@ class Business < ApplicationRecord
   include Embeddable
 
   set_embeddable :embeddable_prompt
-  set_embedding_models :nomic
+  set_embedding_models :informer_gte, :informer_nomic
 
   validates_presence_of :description, :title
 

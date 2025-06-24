@@ -33,10 +33,10 @@ class InformerClient < ApplicationClient
       case key.to_sym
       when :informer_gte
         INFORMER_GTE
-      # when :informer_mxbai
-      #   INFORMER_MXBAI
-      # when :informer_nomic
-      #   INFORMER_NOMIC
+        # when :informer_mxbai
+        #   INFORMER_MXBAI
+        # when :informer_nomic
+        #   INFORMER_NOMIC
       end
     end
   end

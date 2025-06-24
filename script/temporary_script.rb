@@ -11,7 +11,7 @@ def dumb_stuff
   subreddit_post = SubredditPost.joins(:embeddings).random.first
   nn = subreddit_post.nearest_neighbors.pluck(:title)
 
-  [subreddit_post.title] + nn
+  [ subreddit_post.title ] + nn
 end
 
 def dumb_stuff_two(query)

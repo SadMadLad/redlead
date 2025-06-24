@@ -4,7 +4,7 @@ class ScrapeSubredditsJob < ApplicationJob
     reddit_client = RedditClient.new
 
     0.upto(continue_upto) do
-      subreddits, after = RedditClient[:subreddits, after:] reddit_client.subreddits(after:)
+      subreddits, after = reddit_client.subreddits(after:)
 
       subreddits = Subreddit.create subreddits
       subreddits = subreddits.filter(&:valid?)

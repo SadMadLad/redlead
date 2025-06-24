@@ -4,15 +4,26 @@ class ScrapeSubredditPostsJob < ApplicationJob
     after = nil
 
     0.upto(continue_upto) do
-      subreddit_posts, after = RedditClient[:subreddit_posts, subreddit, after:]
-      subreddit_posts = subreddit.subreddit_posts.create subreddit_posts
-      subreddit_posts = subreddit_posts.filter(&:valid?)
+      case response = RedditClient[:subreddit_posts, subreddit, after:]
+      when :too_many_requests
+        puts "Too many requests sent. Starting to sleep for 3 minutes. Subreddit Id: #{subreddit_id}"
+        continue_upto += 1
 
-      subreddit_posts.each_slice(20) do |posts|
-        SubredditPost.embed(posts, async:)
-      end if embed
+        sleep 3.minutes
+      when :unavailable
+        SolidQueue::ExecutionLog.create(
+          args: { subreddit_id:, continue_upto:, embed:, async: },
+          job_class: self.class.name,
+          description: "Too many requests made or legal issue. Potentially blocked as well."
+        )
+        break
+      else
+        subreddit_posts, after = response
+        subreddit_posts = subreddit.subreddit_posts.create subreddit_posts
+        subreddit_posts = subreddit_posts.filter(&:valid?)
 
-      break if after.blank?
+        SubredditPost.embed(subreddit_posts, async:) if embed
+      end
     end
   end
 end

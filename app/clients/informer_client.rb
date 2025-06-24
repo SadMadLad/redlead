@@ -9,25 +9,15 @@ class InformerClient < ApplicationClient
     informer_nomic: "nomic-ai/nomic-embed-text-v1"
   }.with_indifferent_access.freeze
 
-  MODELS_DETAILS = {
-    "Supabase/gte-small" => Informers.pipeline("embedding", "Supabase/gte-small"),
-    "mixedbread-ai/mxbai-embed-large-v1" => Informers.pipeline("embedding", "mixedbread-ai/mxbai-embed-large-v1"),
-    "nomic-ai/nomic-embed-text-v1" => Informers.pipeline("embedding", "nomic-ai/nomic-embed-text-v1")
-}.with_indifferent_access.freeze
-
-  def initialize
-    @client = Informers
-  end
-
   def embed(embedding_model, sentences)
     sentences = Array(sentences) unless sentences.is_a?(Array)
-    model = @client.pipeline("embedding", models[embedding_model])
+    pipeline_model = model(embedding_model)
 
-    model.(sentences)
+    pipeline_model.(sentences)
   end
 
   def [](model_key)
-    MODELS_DETAILS[EMBEDDING_MODELS[model_key]]
+    model(model_key)
   end
 
   class << self
@@ -38,10 +28,25 @@ class InformerClient < ApplicationClient
     def ranking_models
       RANKING_MODELS
     end
+
+    def model(key)
+      case key.to_sym
+      when :informer_gte
+        INFORMER_GTE
+      # when :informer_mxbai
+      #   INFORMER_MXBAI
+      # when :informer_nomic
+      #   INFORMER_NOMIC
+      end
+    end
   end
 
   private
     %i[ models ranking_models ].each do |method_name|
       define_method(method_name) { self.class.public_send(method_name) }
+    end
+
+    def model(...)
+      self.class.model(...)
     end
 end

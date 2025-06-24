@@ -2,11 +2,15 @@ class RedditClient < ApplicationClient
   include Utils::RedditParser
 
   BASE_URL = "https://www.reddit.com"
+  USER_AGENTS = Mechanize::AGENT_ALIASES.except("Mechanize").values.freeze
 
   def initialize
     @client = Faraday.new(
       url: BASE_URL,
-      headers: { "Content-Type" => "application/json" }
+      headers: {
+        "Content-Type" => "application/json",
+        "User-Agent" => "rails:localhost:3000 (by /u/Specific_Stable_4450)"
+      }
     )
   end
 
@@ -15,7 +19,7 @@ class RedditClient < ApplicationClient
       req.params = req.params.merge(params)
     end
 
-    parse_subreddits response.body
+    parse_subreddits response.body, response.status
   end
 
   def subreddit(subreddit_url, **params)
@@ -25,7 +29,7 @@ class RedditClient < ApplicationClient
       req.params = req.params.merge(params)
     end
 
-    parse_subreddit response.body
+    parse_subreddit response.body, response.status
   end
 
   def subreddit_posts(subreddit_url, listing_type: "new", limit: 100, **params)
@@ -36,7 +40,7 @@ class RedditClient < ApplicationClient
       req.params = req.params.merge(params)
     end
 
-    parse_subreddit_posts response.body
+    parse_subreddit_posts response.body, response.status
   end
 
   class << self

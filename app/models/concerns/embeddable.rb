@@ -20,7 +20,7 @@ module Embeddable
       service = use_informer ? InformerService : EmbeddingService
 
       if async
-        CallServiceJob.perform_later(service, record: records.to_a, embedding_models:)
+        CallServiceJob.perform_later(service, record: records, embedding_models:)
       else
         service.call(record: records, embedding_models:)
       end
@@ -63,25 +63,22 @@ module Embeddable
     end
 
     # Attempt at hybrid querying
-    def hybrid_recommendations(keyword:, prefix: nil, embedding_model: :informer_gte, distance: "cosine")
-      return recommendations(keyword, embedding_model:, distance:) if prefix.blank?
+    def hybrid_recommendations(queries, embedding_model: :informer_gte, distance: "cosine")
+      return recommendations(queries.first, embedding_model:, distance:) if queries.one?
 
-      ollama_client = OllamaClient.new(embedding_model:)
+      queries = queries.map do |query|
+        neighbors(embedding_by_model(embedding_model, query), embedding_model, distance)
+      end
 
-      keyword_embedding = embedding_by_model(embedding_model, keyword)
-      full_query_embedding = embedding_by_model(embedding_model, "#{prefix} #{keyword}")
-
-      keyword_results = neighbors(keyword_results, embedding_model:, distance:)
-      full_query_results = neighbors(full_query_embedding, embedding_model:, distance:)
-
-      Neighbor::Reranking.rrf(keyword_results, full_query_results).pluck(:result)
+      Neighbor::Reranking.rrf(*queries).pluck(:result)
     end
 
     # Helper method to find the results based on the query
-    def neighbors(query_embedding, embedding_model, distance)
+    def neighbors(query_embedding, embedding_model, distance, limit: 20)
       neighbor_ids = embeddings
         .public_send(embedding_model)
         .nearest_neighbors(:embedding, query_embedding, distance:)
+        .limit(20)
         .pluck(:embeddable_id)
 
       where(id: neighbor_ids)

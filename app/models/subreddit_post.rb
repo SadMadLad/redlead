@@ -2,7 +2,7 @@ class SubredditPost < ApplicationRecord
   include Embeddable
 
   set_embeddable :prompt
-  set_embedding_models :informer_gte, :informer_nomic
+  set_embedding_models :informer_gte
 
   belongs_to :subreddit
 
@@ -23,7 +23,7 @@ class SubredditPost < ApplicationRecord
       @prompt = @prompt.squish
     elsif title?
       @prompt = title
-    elsif
+    else
       @prompt = selftext
     end
   end

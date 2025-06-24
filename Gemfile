@@ -14,6 +14,7 @@ gem "informers"
 gem "jbuilder"
 gem "kamal", require: false
 gem "langchainrb"
+gem "mechanize"
 gem "neighbor"
 gem "nokogiri"
 gem "ostruct"

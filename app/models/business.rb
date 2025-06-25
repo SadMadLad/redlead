@@ -12,7 +12,7 @@ class Business < ApplicationRecord
 
   def process_embedding
     if website_url?
-      ScrapeWebsiteJob.perform_later(id)
+      ScrapeBusinessWebsiteJob.perform_later(id)
     else
       embed
     end

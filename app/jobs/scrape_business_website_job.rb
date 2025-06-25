@@ -1,4 +1,4 @@
-class ScrapeWebsiteJob < ApplicationJob
+class ScrapeBusinessWebsiteJob < ApplicationJob
   def perform(business_id)
     business = Business.find(business_id)
     scraped_data = PageScraperService.call(website_url: business.website_url)

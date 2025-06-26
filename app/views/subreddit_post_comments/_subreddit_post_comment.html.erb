@@ -1,0 +1,6 @@
+<div style="padding-left: <%= subreddit_post_comment.depth %>rem">
+  <p><%= subreddit_post_comment.body %> - by <span class="font-semibold text-sm"><%= subreddit_post_comment.author %></span></p>
+  <% if subreddit_post_comment.replies.present? %>
+    <%= render subreddit_post_comment.replies %>
+  <% end %>
+</div>

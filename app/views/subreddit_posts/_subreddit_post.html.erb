@@ -1,0 +1,9 @@
+<div data-controller="markdown">
+  <p>Title: <strong class="font-bold text-lg"><%== subreddit_post.title %></strong></p>
+  <%= link_to "Article on Reddit", subreddit_post.url, class: "underline text-blue-500" %>
+  <% if subreddit_post.selftext.present? %>
+    <p class="max-h-40 prose truncate" data-markdown-target="markdown"><%== subreddit_post.selftext %></p>
+  <% end %>
+  <p>By: <strong class="font-bold text-lg"><%= subreddit_post.author %></strong></p>
+  <%= link_to "Show", subreddit_subreddit_post_path(@subreddit, subreddit_post), class: "px-2.5 py-1.5 bg-blue-500 rounded-lg font-bold text-white" %>
+</div>

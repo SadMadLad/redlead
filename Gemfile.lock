@@ -211,7 +211,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2025.0617)
+    mime-types-data (3.2025.0624)
     mini_magick (5.2.0)
       benchmark
       logger
@@ -261,6 +261,7 @@ GEM
     onnxruntime (0.10.0-x86_64-linux)
       ffi
     ostruct (0.6.2)
+    pagy (9.3.4)
     parallel (1.27.0)
     parser (3.3.8.0)
       ast (~> 2.4.1)
@@ -375,12 +376,12 @@ GEM
     rubyntlm (0.6.5)
       base64
     rubyzip (2.4.1)
-    safetensors (0.1.4)
+    safetensors (0.2.0)
       rb_sys
-    safetensors (0.1.4-aarch64-linux)
-    safetensors (0.1.4-aarch64-linux-musl)
-    safetensors (0.1.4-x86_64-linux)
-    safetensors (0.1.4-x86_64-linux-musl)
+    safetensors (0.2.0-aarch64-linux)
+    safetensors (0.2.0-aarch64-linux-musl)
+    safetensors (0.2.0-x86_64-linux)
+    safetensors (0.2.0-x86_64-linux-musl)
     securerandom (0.4.1)
     selenium-webdriver (4.33.0)
       base64 (~> 0.2)
@@ -388,7 +389,7 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
-    solid_cable (3.0.10)
+    solid_cable (3.0.11)
       actioncable (>= 7.2)
       activejob (>= 7.2)
       activerecord (>= 7.2)
@@ -499,6 +500,7 @@ DEPENDENCIES
   neighbor
   nokogiri
   ostruct
+  pagy
   parallel
   pg (~> 1.1)
   pgvector

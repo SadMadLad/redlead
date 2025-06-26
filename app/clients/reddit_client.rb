@@ -43,6 +43,17 @@ class RedditClient < ApplicationClient
     parse_subreddit_posts response.body, response.status
   end
 
+  def subreddit_post_comments(subreddit_post_url, limit: 30, **params)
+    subreddit_post_url = subreddit_post_url.permalink if subreddit_post_url.is_a?(SubredditPost)
+    params = params.merge(limit:)
+
+    response = @client.get("#{subreddit_post_url}.json") do |req|
+      req.params = req.params.merge(params)
+    end
+
+    parse_subreddit_post_comments response.body, response.status
+  end
+
   class << self
     def [](method_name, ...)
       new.public_send(method_name, ...)

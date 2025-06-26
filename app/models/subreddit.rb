@@ -5,6 +5,10 @@ class Subreddit < ApplicationRecord
   set_embedding_models :informer_gte, :informer_nomic
 
   has_many :subreddit_posts, dependent: :nullify
+  has_many :subreddit_post_comments, through: :subreddit_posts
+
+  alias_method :posts, :subreddit_posts
+  alias_method :comments, :subreddit_post_comments
 
   validates_presence_of *%i[subscribers display_name display_id title url description description_html name]
 

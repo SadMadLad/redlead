@@ -1,0 +1,7 @@
+<div class="rounded-lg px-4 py-2.5 border border-blue-500" data-controller="markdown">
+  <%= link_to "Path to Actual Subreddit", "https://www.reddit.com/#{subreddit.url}", class: "bg-blue-500 text-white font-bold px-2.5 py-1.5" %>
+  <h3 class="font-extrabold text-xl my-2.5"><%= subreddit.title %></h3>
+  <p data-markdown-target="markdown" class="prose w-full"><%= subreddit.description %></p>
+  <p>Total Subscribers: <%= subreddit.subscribers %></p>
+  <%= link_to "Show", subreddit_path(subreddit), class: "bg-blue-500 text-white font-bold px-2.5 py-1.5 my-2.5" %>
+</div>

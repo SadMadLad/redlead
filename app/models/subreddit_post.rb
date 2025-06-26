@@ -4,7 +4,11 @@ class SubredditPost < ApplicationRecord
   set_embeddable :prompt
   set_embedding_models :informer_gte
 
-  belongs_to :subreddit
+  belongs_to :subreddit, optional: true
+
+  has_many :subreddit_post_comments, dependent: :nullify
+
+  alias_method :comments, :subreddit_post_comments
 
   validates_presence_of :num_comments, :score, :ups, :upvote_ratio, :author, :author_fullname, :display_id, :domain, :name,
     :permalink, :url, :subreddit_name, :subreddit_name_prefixed, :subreddit_str_id, :title

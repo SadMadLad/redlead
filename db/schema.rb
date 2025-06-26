@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_21_205800) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_25_165109) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -44,6 +44,34 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_21_205800) do
     t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
   end
 
+  create_table "subreddit_post_comments", force: :cascade do |t|
+    t.bigint "subreddit_post_id"
+    t.bigint "parent_id"
+    t.integer "depth"
+    t.integer "downs"
+    t.integer "likes"
+    t.integer "score"
+    t.integer "ups"
+    t.bigint "created_utc"
+    t.string "author"
+    t.string "author_fullname"
+    t.string "display_id"
+    t.string "link_id"
+    t.string "name"
+    t.string "parent_display_id"
+    t.string "subreddit_name"
+    t.string "subreddit_str_id"
+    t.string "subreddit_name_prefixed"
+    t.text "body"
+    t.text "body_html"
+    t.text "permalink"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_subreddit_post_comments_on_name", unique: true
+    t.index ["parent_id"], name: "index_subreddit_post_comments_on_parent_id"
+    t.index ["subreddit_post_id"], name: "index_subreddit_post_comments_on_subreddit_post_id"
+  end
+
   create_table "subreddit_posts", force: :cascade do |t|
     t.bigint "subreddit_id"
     t.integer "num_comments"
@@ -65,6 +93,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_21_205800) do
     t.text "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "created_utc"
     t.index ["name"], name: "index_subreddit_posts_on_name", unique: true
     t.index ["subreddit_id"], name: "index_subreddit_posts_on_subreddit_id"
   end
@@ -80,8 +109,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_21_205800) do
     t.text "description_html"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "created_utc"
     t.index ["url"], name: "index_subreddits_on_url", unique: true
   end
 
+  add_foreign_key "subreddit_post_comments", "subreddit_post_comments", column: "parent_id"
+  add_foreign_key "subreddit_post_comments", "subreddit_posts"
   add_foreign_key "subreddit_posts", "subreddits"
 end

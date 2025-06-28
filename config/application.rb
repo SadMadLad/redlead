@@ -25,5 +25,8 @@ module Redlead
     # config.eager_load_paths << Rails.root.join("extras")
 
     config.autoload_once_paths << "#{root}/app/serializers"
+
+    # Configure schema format to sql
+    config.active_record.schema_format = :sql
   end
 end

@@ -13,7 +13,7 @@ class ScrapeSubredditPostCommentsJob < ApplicationJob
     else
       created_comments = []
 
-      parent_comments = comments.filter{ |comment| comment["parent_display_id"].start_with?("t1") }
+      parent_comments = comments.filter { |comment| comment["parent_display_id"].start_with?("t1") }
       reply_comments = parent_comments.excluding(parent_comments)
 
       parent_comments.each do |parent_comment|

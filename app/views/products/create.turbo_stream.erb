@@ -1,0 +1,7 @@
+<%= turbo_stream.append :products do %>
+  <%= render @product %>
+<% end %>
+
+<%= turbo_stream.update :new_product do %>
+  <%= link_to "Add new product", new_business_product_path(@business), class: "underline", data: { turbo_frame: :new_product } %>
+<% end %>

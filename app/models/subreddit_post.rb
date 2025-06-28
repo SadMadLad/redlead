@@ -1,5 +1,8 @@
 class SubredditPost < ApplicationRecord
   include Embeddable
+  include PgSearch::Model
+
+  pg_search_scope :search_by_title, against: :title
 
   set_embeddable :prompt
   set_embedding_models :informer_gte
@@ -7,6 +10,9 @@ class SubredditPost < ApplicationRecord
   belongs_to :subreddit, optional: true
 
   has_many :subreddit_post_comments, dependent: :nullify
+
+  # Attribute to store the ranking score temporarily
+  attribute :ranking_score, :float
 
   alias_method :comments, :subreddit_post_comments
 

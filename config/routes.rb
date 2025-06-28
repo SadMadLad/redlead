@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
-  resources :businesses
-  resources :subreddits, only: %i[index show] do
-    resources :subreddit_posts, only: %i[index show]
+  resources :businesses do
+    resources :products, only: %i[ new create edit update destroy ]
+    resource :leads, only: :show
+  end
+
+  resources :subreddits, only: %i[ index show ] do
+    resources :subreddit_posts, only: %i[ index show ]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

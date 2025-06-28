@@ -11,10 +11,6 @@
   </div>
 
   <div id="businesses" class="min-w-full divide-y divide-gray-200 space-y-5">
-    <div class="my-4">
-      <%= link_to "Subreddits", subreddits_path, class: "py-2.5 px-4 text-white font-semibold bg-blue-500 rounded-lg" %>
-    </div>
-
     <% if @businesses.any? %>
       <% @businesses.each do |business| %>
         <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0">

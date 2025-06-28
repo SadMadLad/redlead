@@ -63,22 +63,16 @@ module Embeddable
     end
 
     # Attempt at hybrid querying
-    def hybrid_recommendations(queries, embedding_model: :informer_gte, distance: "cosine")
-      return recommendations(queries.first, embedding_model:, distance:) if queries.one?
-
-      queries = queries.map do |query|
-        neighbors(embedding_by_model(embedding_model, query), embedding_model, distance)
-      end
-
-      Neighbor::Reranking.rrf(*queries).pluck(:result)
+    def multi_query_recommendations(queries, embedding_model: :informer_gte, distance: "cosine")
+      queries.map { |query| recommendations(query, embedding_model:, distance:) }
     end
 
     # Helper method to find the results based on the query
-    def neighbors(query_embedding, embedding_model, distance, limit: 20)
+    def neighbors(query_embedding, embedding_model, distance, limit: 10)
       neighbor_ids = embeddings
         .public_send(embedding_model)
         .nearest_neighbors(:embedding, query_embedding, distance:)
-        .limit(20)
+        .limit(limit)
         .pluck(:embeddable_id)
 
       where(id: neighbor_ids)

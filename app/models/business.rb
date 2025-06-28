@@ -4,11 +4,10 @@ class Business < ApplicationRecord
   set_embeddable :embeddable_prompt
   set_embedding_models :informer_gte, :informer_nomic
 
+  has_many :products, dependent: :destroy
+
   validates_presence_of :description, :title
-
   validates :website_url, url: true, allow_blank: true
-
-  after_create_commit :process_embedding
 
   def process_embedding
     if website_url?

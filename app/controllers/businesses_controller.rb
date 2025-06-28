@@ -6,6 +6,7 @@ class BusinessesController < ApplicationController
   end
 
   def show
+    @products = @business.products
   end
 
   def new

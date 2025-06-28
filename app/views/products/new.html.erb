@@ -1,0 +1,21 @@
+<%= turbo_frame_tag :new_product do %>
+  <%= form_with model: @product, url: business_products_path(@business, @product), class: "flex flex-col gap-2.5" do |form| %>
+    <div class="flex gap-2.5 items-center">
+      <%= form.label :title, class: "font-bold" %>
+      <%= form.text_field :title, class: "border rounded-lg p-2" %>
+      <% if @product.errors.full_messages_for(:title).present? %>
+        <p class="text-red-500"><%= @product.errors.full_messages_for(:title).to_sentence %></p>
+      <% end %>
+    </div>
+    <div class="flex gap-2.5 items-center">
+      <%= form.label :description, class: "font-bold" %>
+      <%= form.text_area :description, class: "border rounded-lg p-2" %>
+      <% if @product.errors.full_messages_for(:description).present? %>
+        <p class="text-red-500"><%= @product.errors.full_messages_for(:description).to_sentence %></p>
+      <% end %>
+    </div>
+    <div>
+      <%= form.submit class: "px-4 py-2.5 bg-blue-500 rounded-lg text-white font-bold" %>
+    </div>
+  <% end %>
+<% end %>

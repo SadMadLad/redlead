@@ -7,15 +7,16 @@ SubredditPost.left_outer_joins(:embeddings).where(embeddings: { id: nil }).find_
 end
 
 unscrapable_post = SubredditPost.find_by(display_id: "1lhizpw")
-subreddit_posts = SubredditPost.left_outer_joins(:subreddit_post_comments).where(subreddit_post_comments: { id: nil })
+subreddit_posts = SubredditPost.where.not(id: 3290..408908)
 subreddit_posts.each do |subreddit_post|
   ScrapeSubredditPostCommentsJob.new.perform(subreddit_post.id, embed: true, async: false)
 rescue URI::InvalidURIError
   puts "\n\n\nURI::InvalidURIError\n\n\n"
 end
 
-
 replies = SubredditPostComment.where.not(depth: 0)
+
+leads = FindLeadService.call(business: Business.first); leads.map { |lead_list| lead_list.map(&:title) }
 
 replies.each do |reply|
   parent = SubredditPostComment.find_by(name: reply.parent_display_id)

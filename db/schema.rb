@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_25_165109) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_26_011104) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -32,6 +32,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_25_165109) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["embeddable_type", "embeddable_id"], name: "index_embeddings_on_embeddable"
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.bigint "business_id", null: false
+    t.string "title"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["business_id"], name: "index_products_on_business_id"
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|
@@ -113,6 +122,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_25_165109) do
     t.index ["url"], name: "index_subreddits_on_url", unique: true
   end
 
+  add_foreign_key "products", "businesses"
   add_foreign_key "subreddit_post_comments", "subreddit_post_comments", column: "parent_id"
   add_foreign_key "subreddit_post_comments", "subreddit_posts"
   add_foreign_key "subreddit_posts", "subreddits"

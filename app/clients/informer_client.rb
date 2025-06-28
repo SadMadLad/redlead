@@ -1,12 +1,10 @@
 class InformerClient < ApplicationClient
   RANKING_MODLES = {
-    informer_mxbai: "mixedbread-ai/mxbai-rerank-base-v1"
+    informer_jina: "jinaai/jina-reranker-v1-turbo-en",
   }.with_indifferent_access.freeze
 
   EMBEDDING_MODELS = {
-    informer_gte: "Supabase/gte-small",
-    informer_mxbai: "mixedbread-ai/mxbai-embed-large-v1",
-    informer_nomic: "nomic-ai/nomic-embed-text-v1"
+    informer_gte: "Supabase/gte-small"
   }.with_indifferent_access.freeze
 
   def embed(embedding_model, sentences)
@@ -14,6 +12,10 @@ class InformerClient < ApplicationClient
     pipeline_model = model(embedding_model)
 
     pipeline_model.(sentences)
+  end
+
+  def rerank(rerank_model, results, query)
+    ranking_model(rerank_model).(query, results)
   end
 
   def [](model_key)
@@ -33,10 +35,13 @@ class InformerClient < ApplicationClient
       case key.to_sym
       when :informer_gte
         INFORMER_GTE
-        # when :informer_mxbai
-        #   INFORMER_MXBAI
-        # when :informer_nomic
-        #   INFORMER_NOMIC
+      end
+    end
+
+    def ranking_model(key)
+      case key.to_sym
+      when :informer_jina
+        RANKING_JINA
       end
     end
   end
@@ -48,5 +53,9 @@ class InformerClient < ApplicationClient
 
     def model(...)
       self.class.model(...)
+    end
+
+    def ranking_model(...)
+      self.class.ranking_model(...)
     end
 end

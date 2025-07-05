@@ -1,4 +1,4 @@
-<%= form_with(model: business, class: "contents") do |form| %>
+<%= form_with(model: business, class: "contents", data: { controller: "lead-form", lead_form_target: "form", lead_form_business_type_value: business.business_type, action: "submit->lead-form#processBeforeSubmission" }) do |form| %>
   <% if business.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
       <h2><%= pluralize(business.errors.count, "error") %> prohibited this business from being saved:</h2>
@@ -23,7 +23,8 @@
 
   <div class="my-5">
     <%= form.label :business_type %>
-    <%= form.select :business_type, business_types, {}, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": business.errors[:description].none?, "border-red-400 focus:outline-red-600": business.errors[:description].any?}] %>
+    <%= form.select :business_type, business_types, {}, data: { lead_form_target: "categorySelect", action: "lead-form#toggleOtherField" }, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": business.errors[:description].none?, "border-red-400 focus:outline-red-600": business.errors[:description].any?}] %>
+    <%= form.text_field :business_type, data: { lead_form_target: "otherField" }, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": business.errors[:description].none?, "border-red-400 focus:outline-red-600": business.errors[:description].any?}] %>
   </div>
 
   <div class="my-5">

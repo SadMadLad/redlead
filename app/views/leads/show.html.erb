@@ -10,11 +10,7 @@
     <div class="hidden" data-toggle-target="hiddenToggleable">
       <ul class="flex flex-col gap-6" data-toggle-target="hiddenToggleable">
         <% @leads.each do |lead| %>
-          <% if lead.is_a?(SubredditPost) %>
-            <%= render "leads/subreddit_post", subreddit_post: lead %>
-          <% else %>
-            <%= render "leads/subreddit_post_comment", subreddit_post_comment: lead %>
-          <% end %>
+          <%= render "lead", lead: %>
         <% end %>
       </ul>
     </div>

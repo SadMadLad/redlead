@@ -1,0 +1,22 @@
+<% if lead.is_a?(SubredditPost) %>
+  <li class="py-2.5 px-4 rounded-lg border border-blue-500">
+    <p class="pb-1.5 border-b"><b><%= lead.title %></b></p>
+    <p class="py-1.5 border-b">Ranking Score: <%= lead.ranking_score %></p>
+    <% if lead.selftext_html.present? %>
+      <div class="prose">
+        <%== CGI.unescapeHTML(lead.selftext_html) %>
+      </div>
+    <% end %>
+    <p class="pt-2.5">Subreddit: <%= lead.subreddit_name %></p>
+  </li>
+<% else %>
+  <li class="py-2.5 px-4 rounded-lg border border-blue-500">
+    <p class="py-1.5 border-b">Ranking Score: <%= lead.ranking_score %></p>
+    <% if lead.body.present? %>
+      <div class="prose">
+        <%== CGI.unescapeHTML(lead.body_html) %>
+      </div>
+    <% end %>
+    <p class="pt-2.5">Subreddit: <%= lead.subreddit_name %></p>
+  </li>
+<% end %>

@@ -2,19 +2,18 @@ class Business < ApplicationRecord
   include Embeddable
 
   set_embeddable :embeddable_prompt
-  set_embedding_models :informer_gte, :informer_nomic
+  set_embedding_models :informer_gte
 
   has_many :products, dependent: :destroy
 
-  validates_presence_of :description, :title
+  validates_presence_of :business_type, :description, :title
   validates :website_url, url: true, allow_blank: true
 
+  after_create_commit :process_embedding
+
   def process_embedding
-    if website_url?
-      ScrapeBusinessWebsiteJob.perform_later(id)
-    else
-      embed
-    end
+    ScrapeBusinessWebsiteJob.perform_later(id) if website_url?
+    embed unless website_url?
   end
 
   def embeddable_prompt
@@ -25,6 +24,6 @@ class Business < ApplicationRecord
       <scraped-data>#{intelligent_scraped_summary}</scraped-data>
     XML
 
-    @prompt ||= @prompt.squish
+    @prompt ||= @prompt.squeeze(" ").squeeze("\n")
   end
 end

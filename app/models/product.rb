@@ -8,10 +8,10 @@ class Product < ApplicationRecord
 
   validates_presence_of :title, :description
 
-  after_create_commit :process_embedding
+  after_create_commit :embed_product
 
-  def process_embedding
-    self.embed(async: true)
+  def embed_product
+    embed
   end
 
   def prompt
@@ -22,6 +22,6 @@ class Product < ApplicationRecord
       <description>#{description}</description>
     XML
 
-    @prompt = @prompt.squish
+    @prompt = @prompt.squeeze(" ").squeeze("\n").strip
   end
 end

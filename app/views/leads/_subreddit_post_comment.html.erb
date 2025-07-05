@@ -1,0 +1,9 @@
+<li class="py-2.5 px-4 rounded-lg border border-blue-500">
+  <p class="py-1.5 border-b">Ranking Score: <%= subreddit_post_comment.ranking_score %></p>
+  <% if subreddit_post_comment.body.present? %>
+    <div class="prose">
+      <%== CGI.unescapeHTML(subreddit_post_comment.body_html) %>
+    </div>
+  <% end %>
+  <p class="pt-2.5">Subreddit: <%= subreddit_post_comment.subreddit_name %></p>
+</li>

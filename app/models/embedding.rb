@@ -7,7 +7,7 @@ class Embedding < ApplicationRecord
 
   validates :embedding_model, presence: true, uniqueness: { scope: %i[ embeddable_id embeddable_type ] }
 
-  enum :embedding_model, OllamaClient.embedding_models.merge(InformerClient.models)
+  enum :embedding_model, ApplicationAgent.embedding_models
 
   class << self
     PROVIDERS.each do |provider|

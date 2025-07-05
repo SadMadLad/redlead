@@ -1,6 +1,7 @@
 class CreateBusinesses < ActiveRecord::Migration[8.0]
   def change
     create_table :businesses do |t|
+      t.string :business_type
       t.string :title, null: false
       t.string :website_url
 

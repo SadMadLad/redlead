@@ -24,6 +24,7 @@ class RedditClient < ApplicationClient
 
   def subreddit(subreddit_url, **params)
     subreddit_url = subreddit_url.url if subreddit_url.is_a?(Subreddit)
+    subreddit_url = URI::DEFAULT_PARSER.escape(subreddit_url)
 
     response = @client.get("#{subreddit_url}/about.json") do |req|
       req.params = req.params.merge(params)
@@ -34,6 +35,8 @@ class RedditClient < ApplicationClient
 
   def subreddit_posts(subreddit_url, listing_type: "new", limit: 100, **params)
     subreddit_url = subreddit_url.url if subreddit_url.is_a?(Subreddit)
+    subreddit_url = URI::DEFAULT_PARSER.escape(subreddit_url)
+
     params = params.merge(limit:)
 
     response = @client.get("#{subreddit_url}/#{listing_type}.json") do |req|
@@ -43,8 +46,10 @@ class RedditClient < ApplicationClient
     parse_subreddit_posts response.body, response.status
   end
 
-  def subreddit_post_comments(subreddit_post_url, limit: 30, **params)
+  def subreddit_post_comments(subreddit_post_url, limit: 50, **params)
     subreddit_post_url = subreddit_post_url.permalink if subreddit_post_url.is_a?(SubredditPost)
+    subreddit_post_url = URI::DEFAULT_PARSER.escape(subreddit_post_url)
+
     params = params.merge(limit:)
 
     response = @client.get("#{subreddit_post_url}.json") do |req|

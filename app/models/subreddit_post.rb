@@ -1,8 +1,6 @@
 class SubredditPost < ApplicationRecord
   include Embeddable
-  include PgSearch::Model
-
-  pg_search_scope :search_by_title, against: :title
+  include RedditQueries
 
   set_embeddable :prompt
   set_embedding_models :informer_gte

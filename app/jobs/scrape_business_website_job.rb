@@ -15,8 +15,8 @@ class ScrapeBusinessWebsiteJob < ApplicationJob
 
     prompt = prompt.squish
 
-    services_summary = OllamaClient.new.complete(prompt:, model: OllamaClient.models[:llama_sm])
-    business.update(intelligent_scraped_summary: services_summary.completion)
+    services_summary = ApplicationAgent.quick_complete(:google, :gemini_20_flash, prompt)
+    business.update(intelligent_scraped_summary: services_summary)
 
     business.embed
   end

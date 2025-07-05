@@ -7,23 +7,41 @@ module Utils
     permalink score subreddit subreddit_id ups subreddit_name_prefixed].freeze
 
     private
-      def parse_subreddits(response, _code)
-        parsed_response = JSON.parse(response)
-        after = parsed_response.dig("data", "after")
-        children = parsed_response.dig("data", "children")
-        children = children.pluck("data").map do |child|
-          child = child.slice(*REQUIRED_SUBREDDIT_FIELDS)
-          child.transform_keys { |key| key == "id" ? "display_id" : key }
+      def parse_subreddits(response, code)
+        case code
+        when 429
+          :too_many_requests
+        when 451
+          :unavailable
+        when 404
+          :not_found
+        else
+          parsed_response = JSON.parse(response)
+          after = parsed_response.dig("data", "after")
+          children = parsed_response.dig("data", "children")
+          children = children.pluck("data").map do |child|
+            child = child.slice(*REQUIRED_SUBREDDIT_FIELDS)
+            child.transform_keys { |key| key == "id" ? "display_id" : key }
+          end
         end
 
         [ children, after ]
       end
 
-      def parse_subreddit(response, _code)
-        parsed_response = JSON.parse(response)
-        parsed_data = parsed_response.dig("data").slice(*REQUIRED_SUBREDDIT_FIELDS)
+      def parse_subreddit(response, code)
+        case code
+        when 429
+          :too_many_requests
+        when 451
+          :unavailable
+        when 404
+          :not_found
+        else
+          parsed_response = JSON.parse(response)
+          parsed_data = parsed_response.dig("data").slice(*REQUIRED_SUBREDDIT_FIELDS)
 
-        parsed_data.transform_keys { |key| key == "id" ? "display_id" : key }
+          parsed_data.transform_keys { |key| key == "id" ? "display_id" : key }
+        end
       end
 
       def parse_subreddit_posts(response, code)
@@ -32,6 +50,8 @@ module Utils
           :too_many_requests
         when 451
           :unavailable
+        when 404
+          :not_found
         else
           parsed_response = JSON.parse(response)
           after = parsed_response.dig("data", "after")
@@ -57,6 +77,8 @@ module Utils
           :not_found
         when 429
           :too_many_requests
+        when 451
+          :unavailable
         else
           comments = []
           unprocessed_comments = JSON.parse(response).last&.dig("data", "children")

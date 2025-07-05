@@ -1,7 +1,6 @@
 <%= turbo_frame_tag :leads do %>
   <%= link_to "Refresh Leads", business_leads_path(@business), class: "rounded-lg px-2.5 py-1.5 mb-6 bg-blue-500 text-white font-bold block text-center" %>
 
-  <%# Business Leads %>
   <section data-controller="toggle">
     <h3 class="text-3xl font-black my-8">
       Potential Business Leads
@@ -10,56 +9,14 @@
     </h3>
     <div class="hidden" data-toggle-target="hiddenToggleable">
       <ul class="flex flex-col gap-6" data-toggle-target="hiddenToggleable">
-        <% @business_leads.each do |subreddit_post_lead| %>
-          <li class="py-2.5 px-4 rounded-lg border border-blue-500">
-            <p class="pb-1.5 border-b"><b><%= subreddit_post_lead.title %></b></p>
-            <p class="py-1.5 border-b">Ranking Score: <%= subreddit_post_lead.ranking_score %></p>
-            <% if subreddit_post_lead.selftext_html.present? %>
-              <div class="prose">
-                <%== CGI.unescapeHTML(subreddit_post_lead.selftext_html) %>
-              </div>
-            <% end %>
-            <p class="pt-2.5">Subreddit: <%= subreddit_post_lead.subreddit_name %></p>
-          </li>
+        <% @leads.each do |lead| %>
+          <% if lead.is_a?(SubredditPost) %>
+            <%= render "leads/subreddit_post", subreddit_post: lead %>
+          <% else %>
+            <%= render "leads/subreddit_post_comment", subreddit_post_comment: lead %>
+          <% end %>
         <% end %>
       </ul>
     </div>
   </section>
-
-
-  <%# Product Leads %>
-  <h3 class="text-3xl font-black my-8">Potential Product Leads</h3>
-  <% if @products.blank? %>
-    Please add a product first.
-  <% elsif @products_leads.values.all?(&:blank?) %>
-    No leads found :(
-  <% else %>
-    <div class="flex flex-col gap-6">
-      <% @products_leads.each do |product, subreddit_post_leads| %>
-        <div class="flex flex-col gap-4 items-start" data-controller="toggle">
-          <div class="flex flex-row gap-2.5 items-end">
-            <span class="bg-gray-100 font-bold text-sm px-4 py-2.5 rounded-lg border"><%= product.title %></span>
-            <b class="bg-blue-500 text-base text-white px-1.5 py-0.5 cursor-pointer" data-action="click->toggle#show" data-toggle-target="shownToggleable">Show</b>
-            <b class="bg-blue-500 hidden text-base text-white px-1.5 py-0.5 cursor-pointer" data-action="click->toggle#hide" data-toggle-target="hiddenToggleable">Hide</b>
-          </div>
-          <div class="hidden" data-toggle-target="hiddenToggleable">
-            <ul class="flex flex-col gap-1.5">
-              <% subreddit_post_leads.each do |subreddit_post_lead| %>
-                <li class="py-2.5 px-4 rounded-lg border border-blue-500">
-                  <p class="pb-1.5 border-b"><b><%= subreddit_post_lead.title %></b></p>
-                  <p class="py-1.5 border-b">Ranking Score: <%= subreddit_post_lead.ranking_score %></p>
-                  <% if subreddit_post_lead.selftext_html.present? %>
-                    <div class="prose">
-                      <%== CGI.unescapeHTML(subreddit_post_lead.selftext_html) %>
-                    </div>
-                  <% end %>
-                  <p class="pt-2.5">Subreddit: <%= subreddit_post_lead.subreddit_name %></p>
-                </li>
-              <% end %>
-            </ul>
-          </div>
-        </div>
-      <% end %>
-    </div>
-  <% end %>
 <% end %>

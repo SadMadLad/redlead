@@ -50,6 +50,6 @@ class BusinessesController < ApplicationController
     end
 
     def business_params
-      params.expect(business: %i[ title description website_url ])
+      params.expect(business: %i[ title description website_url business_type ])
     end
 end

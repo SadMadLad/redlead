@@ -3,7 +3,7 @@ class LeadsController < ApplicationController
 
   def show
     @products = @business.products
-    @business_leads, @products_leads = LeadService.call(products: @products, business: @business)
+    @leads = LeadFindingAgent.new.fetch_leads(@business)
   end
 
   private

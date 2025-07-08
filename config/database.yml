@@ -21,6 +21,7 @@ default: &default
   host: 127.0.0.1
   username: postgres
   password: postgres
+  port: <%= ENV.fetch("DATABASE_PORT", 5432) %>
 
 development:
   primary:

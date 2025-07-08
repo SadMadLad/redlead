@@ -10,12 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_26_011104) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_28_214139) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
 
   create_table "businesses", force: :cascade do |t|
+    t.string "business_type"
     t.string "title", null: false
     t.string "website_url"
     t.text "description", null: false
@@ -28,10 +29,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_26_011104) do
     t.string "embeddable_type", null: false
     t.bigint "embeddable_id", null: false
     t.string "embedding_model", null: false
-    t.vector "embedding", null: false
+    t.vector "embedding", limit: 2000, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["embeddable_type", "embeddable_id"], name: "index_embeddings_on_embeddable"
+    t.index ["embedding"], name: "index_embeddings_on_embedding", opclass: :vector_cosine_ops, using: :hnsw
   end
 
   create_table "products", force: :cascade do |t|
@@ -119,6 +121,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_26_011104) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "created_utc"
+    t.datetime "scraped_at"
     t.index ["url"], name: "index_subreddits_on_url", unique: true
   end
 

@@ -29,11 +29,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_28_214139) do
     t.string "embeddable_type", null: false
     t.bigint "embeddable_id", null: false
     t.string "embedding_model", null: false
-    t.vector "embedding", limit: 2000, null: false
+    t.vector "embedding", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["embeddable_type", "embeddable_id"], name: "index_embeddings_on_embeddable"
-    t.index ["embedding"], name: "index_embeddings_on_embedding", opclass: :vector_cosine_ops, using: :hnsw
   end
 
   create_table "products", force: :cascade do |t|

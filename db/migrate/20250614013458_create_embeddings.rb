@@ -4,9 +4,9 @@ class CreateEmbeddings < ActiveRecord::Migration[8.0]
       t.belongs_to :embeddable, polymorphic: true, null: false
 
       t.string :embedding_model, null: false
-      t.vector :embedding, null: false, limit: 2000
+      t.vector :embedding, null: false
 
-      t.index :embedding, using: :hnsw, opclass: :vector_cosine_ops
+      # t.index :embedding, using: :hnsw, opclass: :vector_cosine_ops
 
       t.timestamps
     end

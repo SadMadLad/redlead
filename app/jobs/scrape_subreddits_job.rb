@@ -9,7 +9,7 @@ class ScrapeSubredditsJob < ApplicationJob
       subreddits = Subreddit.create subreddits
       subreddits = subreddits.filter(&:valid?)
 
-      Subreddit.embed(subreddits, async:) if embed
+      Subreddit.embed if embed
 
       break if after.blank?
     end

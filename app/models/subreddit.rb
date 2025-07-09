@@ -1,8 +1,10 @@
 class Subreddit < ApplicationRecord
+  REDUNDANT_SUBREDDITS = JSON.parse(File.read("lib/data/redundant_subreddits.json")).freeze
+
   include Embeddable
 
   set_embeddable :embeddable_data
-  set_embedding_models :informer_gte, :informer_nomic
+  set_embedding_models :informer_gte
 
   has_many :subreddit_posts, dependent: :nullify
   has_many :subreddit_post_comments, through: :subreddit_posts
@@ -14,6 +16,7 @@ class Subreddit < ApplicationRecord
 
   validates :subscribers, comparison: { greater_than_or_equal_to: 0 }
   validates :url, uniqueness: true
+  validates :display_name, exclusion: { in: REDUNDANT_SUBREDDITS }
 
   def embeddable_data
     return @prompt if @prompt

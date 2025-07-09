@@ -1,11 +1,13 @@
 class RecurringSubredditsScrapingJob < ApplicationJob
   LogStruct = Struct.new(:scrappable)
 
-  def perform
+  def perform(skip_comments: false)
     @unscraped_data = []
 
     Subreddit.order("scraped_at ASC NULLS FIRST").each do |subreddit|
       subreddit_posts, success = scrape_subreddit_posts(subreddit)
+
+      next subreddit.update_column(:scraped_at, DateTime.now) if skip_comments
 
       if success
         subreddit_posts.each { |subreddit_post| scrape_subreddit_post_comments(subreddit_post) }
